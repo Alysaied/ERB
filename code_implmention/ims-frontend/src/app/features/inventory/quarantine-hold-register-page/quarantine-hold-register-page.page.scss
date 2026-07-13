@@ -1,0 +1,13 @@
+.quarantine-hold-register-page {
+  .page-content {
+    padding: 1rem 0;
+  }
+  .mock-preview {
+    background: var(--ims-surface-muted);
+    border-radius: 8px;
+    padding: 1rem;
+    font-size: 0.75rem;
+    overflow: auto;
+    max-height: 200px;
+  }
+}

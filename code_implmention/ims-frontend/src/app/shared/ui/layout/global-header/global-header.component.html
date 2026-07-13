@@ -1,0 +1,18 @@
+<header class="global-header">
+  <div class="brand">
+    <a routerLink="/home/operations" class="brand-link">
+      <span class="brand-icon">IMS</span>
+      <span class="brand-text">Inventory Management</span>
+    </a>
+  </div>
+  <div class="header-center">
+    <ims-global-search-bar></ims-global-search-bar>
+  </div>
+  <div class="header-actions">
+  @if (auth.user(); as user) {
+    <ims-session-context-badge [role]="user.roles[0]" [location]="user.locationScope"></ims-session-context-badge>
+    <ims-notification-icon-inbox-trigger [count]="notificationCount"></ims-notification-icon-inbox-trigger>
+    <ims-user-menu></ims-user-menu>
+  }
+  </div>
+</header>

@@ -1,0 +1,13 @@
+<div class="user-menu">
+  <button type="button" class="user-menu-trigger" (click)="toggleMenu()" aria-haspopup="true">
+  @if (auth.user(); as user) {
+    <span class="user-avatar">{{ user.name.charAt(0) }}</span>
+    <span class="user-name">{{ user.name }}</span>
+  }
+  </button>
+  @if (menuOpen) {
+    <div class="user-menu-dropdown">
+      <button type="button" (click)="signOut()">Sign Out</button>
+    </div>
+  }
+</div>

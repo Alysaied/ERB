@@ -1,0 +1,10 @@
+<div class="page network-rebalancing-analysis-page">
+  <ims-breadcrumb-trail [items]="[{ label: 'Home', route: '/home/operations' }, { label: 'Network Rebalancing Analysis' }]"></ims-breadcrumb-trail>
+  <ims-page-title-bar [title]="title" [subtitle]="description"></ims-page-title-bar>
+  <section class="page-content">
+  @if (data) {
+    <pre class="mock-preview">{{ data | json }}</pre>
+  }
+    <ng-content></ng-content>
+  </section>
+</div>

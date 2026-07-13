@@ -1,0 +1,42 @@
+.secondary-nav {
+  width: 220px;
+  background: var(--ims-surface-muted);
+  border-right: 1px solid var(--ims-border);
+  padding: 1rem 0;
+  flex-shrink: 0;
+  overflow-y: auto;
+}
+
+.secondary-nav-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ims-text-muted);
+  padding: 0 1rem;
+  margin: 0 0 0.5rem;
+}
+
+.secondary-nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.secondary-nav-link {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: var(--ims-text);
+  text-decoration: none;
+  font-size: 0.8125rem;
+
+  &:hover {
+    background: var(--ims-surface);
+  }
+
+  &.active {
+    background: var(--ims-surface);
+    color: var(--ims-primary);
+    font-weight: 600;
+    border-right: 2px solid var(--ims-primary);
+  }
+}

@@ -1,0 +1,1 @@
+[{"name":"com.ims.application.platform.HealthController","comment":"API-175"},{"name":"com.ims.application.platform.SeedCredentialInitializer","comment":"Ensures Sprint 1 seed users have local password hashes (password: demo)."}]

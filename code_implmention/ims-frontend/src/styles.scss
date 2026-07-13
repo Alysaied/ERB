@@ -1,0 +1,40 @@
+:root {
+  --ims-primary: #2563eb;
+  --ims-primary-dark: #1d4ed8;
+  --ims-primary-light: #eff6ff;
+  --ims-bg: #f8fafc;
+  --ims-surface: #ffffff;
+  --ims-surface-muted: #f1f5f9;
+  --ims-text: #0f172a;
+  --ims-text-muted: #64748b;
+  --ims-border: #e2e8f0;
+  --ims-success: #16a34a;
+  --ims-warning: #d97706;
+  --ims-danger: #dc2626;
+  --ims-info: #0284c7;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ims-text);
+  background: var(--ims-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--ims-primary);
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}

@@ -1,0 +1,29 @@
+.task-widget {
+  .task-summary {
+    margin: 0 0 0.75rem;
+    font-weight: 600;
+    color: var(--ims-text);
+  }
+
+  .task-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    a {
+      color: var(--ims-primary);
+      text-decoration: none;
+      font-size: 0.875rem;
+
+      &:hover { text-decoration: underline; }
+    }
+
+    .count {
+      color: var(--ims-text-muted);
+    }
+  }
+}

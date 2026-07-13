@@ -1,0 +1,302 @@
+[
+  {
+    "path": "auth/sign-in",
+    "screenId": "UI-001",
+    "title": "Sign In / Session Entry",
+    "auth": false
+  },
+  {
+    "path": "home/operations",
+    "screenId": "UI-002",
+    "title": "Operational Home Dashboard",
+    "auth": true
+  },
+  {
+    "path": "reports/executive-kpis",
+    "screenId": "UI-003",
+    "title": "Executive KPI Dashboard",
+    "auth": true
+  },
+  {
+    "path": "notifications",
+    "screenId": "UI-004",
+    "title": "Notification Center",
+    "auth": true
+  },
+  {
+    "path": "products/catalog",
+    "screenId": "UI-005",
+    "title": "Product Catalog Management",
+    "auth": true
+  },
+  {
+    "path": "products/import",
+    "screenId": "UI-006",
+    "title": "Product Import Workspace",
+    "auth": true
+  },
+  {
+    "path": "locations",
+    "screenId": "UI-007",
+    "title": "Location and Warehouse Management",
+    "auth": true
+  },
+  {
+    "path": "products/stock-policies",
+    "screenId": "UI-008",
+    "title": "Stock Policy and Threshold Management",
+    "auth": true
+  },
+  {
+    "path": "products/abc-classification",
+    "screenId": "UI-009",
+    "title": "ABC Classification Management",
+    "auth": true
+  },
+  {
+    "path": "governance/policies",
+    "screenId": "UI-010",
+    "title": "Governance Policies and Reason Codes",
+    "auth": true
+  },
+  {
+    "path": "procurement/suppliers",
+    "screenId": "UI-011",
+    "title": "Supplier Management",
+    "auth": true
+  },
+  {
+    "path": "procurement/purchase-orders",
+    "screenId": "UI-012",
+    "title": "Purchase Order Management",
+    "auth": true
+  },
+  {
+    "path": "procurement/requisitions",
+    "screenId": "UI-013",
+    "title": "Purchase Requisition Management",
+    "auth": true
+  },
+  {
+    "path": "procurement/inbound-delivery-planning",
+    "screenId": "UI-014",
+    "title": "Inbound Delivery Planning",
+    "auth": true
+  },
+  {
+    "path": "inbound/goods-receipts",
+    "screenId": "UI-015",
+    "title": "Goods Receipt Workbench",
+    "auth": true
+  },
+  {
+    "path": "inbound/discrepancies",
+    "screenId": "UI-016",
+    "title": "Receipt Discrepancy Resolution",
+    "auth": true
+  },
+  {
+    "path": "inbound/put-away",
+    "screenId": "UI-017",
+    "title": "Put-Away Workbench",
+    "auth": true
+  },
+  {
+    "path": "inbound/non-po-receipts",
+    "screenId": "UI-018",
+    "title": "Non-PO and Return Receipt Intake",
+    "auth": true
+  },
+  {
+    "path": "procurement/inbound-supply-tracking",
+    "screenId": "UI-019",
+    "title": "Inbound Supply Tracking",
+    "auth": true
+  },
+  {
+    "path": "inventory/status-monitor",
+    "screenId": "UI-020",
+    "title": "Inventory Status Monitor",
+    "auth": true
+  },
+  {
+    "path": "inventory/availability",
+    "screenId": "UI-021",
+    "title": "Inventory Availability Inquiry",
+    "auth": true
+  },
+  {
+    "path": "inventory/movement-history",
+    "screenId": "UI-022",
+    "title": "Inventory Movement History",
+    "auth": true
+  },
+  {
+    "path": "inventory/cycle-counts",
+    "screenId": "UI-023",
+    "title": "Cycle Count Workbench",
+    "auth": true
+  },
+  {
+    "path": "inventory/physical-counts",
+    "screenId": "UI-024",
+    "title": "Physical Inventory Count Management",
+    "auth": true
+  },
+  {
+    "path": "inventory/variances",
+    "screenId": "UI-025",
+    "title": "Variance Investigation and Approval",
+    "auth": true
+  },
+  {
+    "path": "inventory/adjustments",
+    "screenId": "UI-026",
+    "title": "Stock Adjustment Management",
+    "auth": true
+  },
+  {
+    "path": "inventory/write-offs",
+    "screenId": "UI-027",
+    "title": "Write-Off Authorization",
+    "auth": true
+  },
+  {
+    "path": "inventory/quarantine",
+    "screenId": "UI-028",
+    "title": "Quarantine and Hold Register",
+    "auth": true
+  },
+  {
+    "path": "inventory/shrinkage-obsolescence",
+    "screenId": "UI-029",
+    "title": "Shrinkage, Loss, and Obsolescence Analysis",
+    "auth": true
+  },
+  {
+    "path": "fulfillment/reservations",
+    "screenId": "UI-030",
+    "title": "Order Reservation Workbench",
+    "auth": true
+  },
+  {
+    "path": "fulfillment/pick-pack-ship",
+    "screenId": "UI-031",
+    "title": "Pick, Pack, and Ship Workbench",
+    "auth": true
+  },
+  {
+    "path": "fulfillment/partial-backorders",
+    "screenId": "UI-032",
+    "title": "Partial Fulfillment and Backorder Management",
+    "auth": true
+  },
+  {
+    "path": "fulfillment/exceptions",
+    "screenId": "UI-033",
+    "title": "Fulfillment Exception Management",
+    "auth": true
+  },
+  {
+    "path": "fulfillment/order-status",
+    "screenId": "UI-034",
+    "title": "Order Fulfillment Status",
+    "auth": true
+  },
+  {
+    "path": "fulfillment/split-planner",
+    "screenId": "UI-035",
+    "title": "Multi-Location Split Fulfillment Planner",
+    "auth": true
+  },
+  {
+    "path": "procurement/low-stock-alerts",
+    "screenId": "UI-036",
+    "title": "Low-Stock Alert Review",
+    "auth": true
+  },
+  {
+    "path": "procurement/replenishment-planning",
+    "screenId": "UI-037",
+    "title": "Replenishment Planning",
+    "auth": true
+  },
+  {
+    "path": "transfers/requests",
+    "screenId": "UI-038",
+    "title": "Transfer Request",
+    "auth": true
+  },
+  {
+    "path": "transfers/approvals",
+    "screenId": "UI-039",
+    "title": "Transfer Approval Queue",
+    "auth": true
+  },
+  {
+    "path": "transfers/execution",
+    "screenId": "UI-040",
+    "title": "Transfer Execution and In-Transit Tracking",
+    "auth": true
+  },
+  {
+    "path": "transfers/network-rebalancing",
+    "screenId": "UI-041",
+    "title": "Network Rebalancing Analysis",
+    "auth": true
+  },
+  {
+    "path": "returns/authorizations",
+    "screenId": "UI-042",
+    "title": "Return Authorization Management",
+    "auth": true
+  },
+  {
+    "path": "returns/inspection-disposition",
+    "screenId": "UI-043",
+    "title": "Return Inspection and Disposition",
+    "auth": true
+  },
+  {
+    "path": "reports/operational",
+    "screenId": "UI-044",
+    "title": "Operational Reports and Analytics",
+    "auth": true
+  },
+  {
+    "path": "reports/valuation-reconciliation",
+    "screenId": "UI-045",
+    "title": "Inventory Valuation Reconciliation",
+    "auth": true
+  },
+  {
+    "path": "reports/promotional-readiness",
+    "screenId": "UI-046",
+    "title": "Promotional Stock Readiness",
+    "auth": true
+  },
+  {
+    "path": "reports/audit-workspace",
+    "screenId": "UI-047",
+    "title": "Audit and Control Review Workspace",
+    "auth": true
+  },
+  {
+    "path": "reports/audit-trail",
+    "screenId": "UI-048",
+    "title": "Audit Trail Query",
+    "auth": true
+  },
+  {
+    "path": "admin/users",
+    "screenId": "UI-049",
+    "title": "User Account Management",
+    "auth": true
+  },
+  {
+    "path": "admin/roles-access",
+    "screenId": "UI-050",
+    "title": "Role and Access Control Administration",
+    "auth": true
+  }
+]

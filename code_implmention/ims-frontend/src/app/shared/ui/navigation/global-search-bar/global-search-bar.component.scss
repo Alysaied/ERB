@@ -1,0 +1,18 @@
+.global-search-bar input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 0.875rem;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  &:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.25);
+  }
+}

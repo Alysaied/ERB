@@ -1,0 +1,266 @@
+"""Assemble Functional Requirements Specification from phase artifacts."""
+import os
+
+BASE = os.path.dirname(os.path.abspath(__file__))
+OUT = os.path.join(BASE, "functional-requirements-specification.md")
+
+APPENDIX = """
+---
+
+# Appendices
+
+## Appendix A: Master Traceability Index
+
+| FR | Feature | User Story | MoSCoW | Phase |
+|----|---------|------------|--------|-------|
+| FR-001 | F-01 | US-001 | Must Have | MVP |
+| FR-002 | F-01 | US-002 | Must Have | MVP |
+| FR-003 | F-01 | US-003 | Must Have | MVP |
+| FR-004 | F-01 | US-004 | Must Have | MVP |
+| FR-005 | F-02 | US-005 | Must Have | MVP |
+| FR-006 | F-02 | US-006 | Must Have | MVP |
+| FR-007 | F-02 | US-007 | Should Have | Phase 2 |
+| FR-008 | F-03 | US-008 | Must Have | MVP |
+| FR-009 | F-03 | US-009 | Should Have | Phase 2 |
+| FR-010 | F-02 | US-010 | Must Have | MVP |
+| FR-011 | F-17 | US-011 | Must Have | MVP |
+| FR-012 | F-03 | US-012 | Should Have | Phase 2 |
+| FR-013 | F-07 | US-013 | Should Have | Phase 2 |
+| FR-014 | F-07 | US-014 | Should Have | Phase 2 |
+| FR-015 | F-05 | US-015 | Must Have | MVP |
+| FR-016 | F-05 | US-016 | Should Have | Phase 2 |
+| FR-017 | F-05 | US-017 | Must Have | MVP |
+| FR-018 | F-06 | US-018 | Must Have | MVP |
+| FR-019 | F-05 | US-019 | Must Have | MVP |
+| FR-020 | F-05 | US-020 | Should Have | Phase 2 |
+| FR-021 | F-07 | US-021 | Should Have | Phase 2 |
+| FR-022 | F-07 | US-022 | Could Have | Phase 3 |
+| FR-023 | F-04 | US-023 | Must Have | MVP |
+| FR-024 | F-04 | US-024 | Must Have | MVP |
+| FR-025 | F-04 | US-025 | Must Have | MVP |
+| FR-026 | F-04 | US-026 | Must Have | MVP |
+| FR-027 | F-04 | US-027 | Must Have | MVP |
+| FR-028 | F-04 | US-028 | Should Have | Phase 2 |
+| FR-029 | F-05 | US-029 | Must Have | MVP |
+| FR-030 | F-14 | US-030 | Must Have | MVP |
+| FR-031 | F-14 | US-031 | Must Have | MVP |
+| FR-032 | F-15 | US-032 | Must Have | MVP |
+| FR-033 | F-16 | US-033 | Must Have | MVP |
+| FR-034 | F-16 | US-034 | Must Have | MVP |
+| FR-035 | F-17 | US-035 | Must Have | MVP |
+| FR-036 | F-17 | US-036 | Must Have | MVP |
+| FR-037 | F-16 | US-037 | Must Have | MVP |
+| FR-038 | F-18 | US-038 | Should Have | Phase 2 |
+| FR-039 | F-19 | US-039 | Should Have | Phase 2 |
+| FR-040 | F-19 | US-040 | Could Have | Phase 3 |
+| FR-041 | F-10 | US-041 | Must Have | MVP |
+| FR-042 | F-10 | US-042 | Must Have | MVP |
+| FR-043 | F-10 | US-043 | Must Have | MVP |
+| FR-044 | F-11 | US-044 | Must Have | MVP |
+| FR-045 | F-12 | US-045 | Must Have | MVP |
+| FR-046 | F-12 | US-046 | Should Have | Phase 2 |
+| FR-047 | F-13 | US-047 | Should Have | Phase 2 |
+| FR-048 | F-10 | US-048 | Should Have | Phase 2 |
+| FR-049 | F-11 | US-049 | Must Have | MVP |
+| FR-050 | F-13 | US-050 | Could Have | Phase 3 |
+| FR-051 | F-20 | US-051 | Must Have | MVP |
+| FR-052 | F-20 | US-052 | Should Have | Phase 2 |
+| FR-053 | F-20 | US-053 | Should Have | Phase 2 |
+| FR-054 | F-20 | US-054 | Should Have | Phase 2 |
+| FR-055 | F-07 | US-055 | Should Have | Phase 2 |
+| FR-056 | F-03 | US-056 | Should Have | Phase 2 |
+| FR-057 | F-25 | US-057 | Won't Have | Deferred |
+| FR-058 | F-08 | US-058 | Must Have | MVP |
+| FR-059 | F-08 | US-059 | Must Have | MVP |
+| FR-060 | F-08 | US-060 | Must Have | MVP |
+| FR-061 | F-08 | US-061 | Should Have | Phase 2 |
+| FR-062 | F-09 | US-062 | Won't Have | Deferred |
+| FR-063 | F-08 | US-063 | Should Have | Phase 2 |
+| FR-064 | F-21 | US-064 | Should Have | Phase 2 |
+| FR-065 | F-21 | US-065 | Should Have | Phase 2 |
+| FR-066 | F-21 | US-066 | Should Have | Phase 2 |
+| FR-067 | F-21 | US-067 | Should Have | Phase 2 |
+| FR-068 | F-22 | US-068 | Must Have | MVP |
+| FR-069 | F-22 | US-069 | Must Have | MVP |
+| FR-070 | F-22 | US-070 | Should Have | Phase 2 |
+| FR-071 | F-14 | US-071 | Should Have | Phase 2 |
+| FR-072 | F-22 | US-072 | Should Have | Phase 2 |
+| FR-073 | F-23 | US-073 | Could Have | Phase 3 |
+| FR-074 | F-20, F-22 | US-074 | Should Have | Phase 2 |
+| FR-075 | F-24 | US-075 | Could Have | Phase 3 |
+| FR-076 | F-20, F-26 | US-076 | Must Have | MVP |
+| FR-077 | F-17, F-26 | US-077 | Must Have | MVP |
+| FR-078 | F-13, F-26 | US-078 | Should Have | Phase 2 |
+| FR-079 | F-07, F-26 | US-079 | Should Have | Phase 2 |
+| FR-080 | F-25, F-26 | US-080 | Won't Have | Deferred |
+| FR-081 | F-27 | US-081 | Must Have | MVP |
+| FR-082 | F-27 | US-082 | Must Have | MVP |
+| FR-083 | F-28 | US-083 | Must Have | MVP |
+| FR-084 | F-28 | US-084 | Must Have | MVP |
+| FR-085 | F-27 | US-085 | Must Have | MVP |
+| FR-086 | F-29 | US-086 | Must Have | MVP |
+| FR-087 | F-29 | US-087 | Should Have | Phase 2 |
+| FR-088 | F-29 | US-088 | Should Have | Phase 2 |
+| FR-089 | F-24 | US-089 | Could Have | Phase 3 |
+| FR-090 | F-30 | US-090 | Must Have | MVP |
+
+## Appendix B: Related Documents
+
+| Document | Purpose |
+|----------|---------|
+| `requirements-quality-review.md` | Quality assessment, gaps, and recommendations |
+| `businsess discovery/project-scope.md` | Product scope boundaries |
+| `business domain/business-processes.md` | Business process catalog (BP-01–BP-32) |
+| `Domain Knowledge/inventory-management-business-rules.md` | Industry business rules (BR-xx) |
+
+## Appendix C: Document Approval
+
+| Role | Name | Signature | Date |
+|------|------|-----------|------|
+| Product Owner | | | |
+| Operations Director | | | |
+| Senior Business Analyst | | | |
+| QA Lead | | | |
+
+---
+
+*End of Functional Requirements Specification — FRS-IMS-001 v1.0*
+"""
+
+
+def body_after_header(path: str) -> str:
+    with open(path, encoding="utf-8") as f:
+        lines = f.readlines()
+    start = 0
+    for i, line in enumerate(lines):
+        if line.strip() == "---" and i > 0:
+            start = i + 1
+            break
+    if start == 0:
+        for i, line in enumerate(lines):
+            if line.startswith("## "):
+                start = i
+                break
+    return "".join(lines[start:])
+
+
+HEADER = """# Functional Requirements Specification (FRS)
+## Inventory Management System
+
+| Attribute | Detail |
+|-----------|--------|
+| **Document ID** | FRS-IMS-001 |
+| **Version** | 1.0 |
+| **Status** | For Stakeholder Review |
+| **Document Owner** | Senior Business Analyst |
+| **Prepared For** | Business stakeholders, product owners, delivery planners, QA |
+| **Date** | July 3, 2026 |
+| **Scope** | Functional and business behavior only — no technical design, architecture, or implementation |
+
+---
+
+## Document Purpose
+
+This Functional Requirements Specification consolidates all Requirements Definition phase deliverables into a single authoritative document for stakeholder review and delivery planning. It defines **what** the Inventory Management System must do from a business perspective.
+
+**Source phases:** Business Discovery, Domain Analysis, Domain Knowledge, Requirements Definition.
+
+---
+
+## Table of Contents
+
+1. [Introduction](#part-0-introduction)
+2. [Feature Catalog](#part-1-feature-catalog)
+3. [Functional Requirements](#part-2-functional-requirements)
+4. [User Stories](#part-3-user-stories)
+5. [Acceptance Criteria](#part-4-acceptance-criteria)
+6. [Requirement Priorities](#part-5-requirement-priorities)
+7. [Requirement Dependencies](#part-6-requirement-dependencies)
+8. [Appendices](#appendices)
+
+---
+
+## Specification Summary
+
+| Artifact | Count | Identifier Range |
+|----------|-------|------------------|
+| Features | 30 | F-01 – F-30 |
+| Functional Requirements | 90 | FR-001 – FR-090 |
+| User Stories | 90 | US-001 – US-090 |
+| Acceptance Criteria | 360+ | AC-{Story}-{Category}{Seq} |
+| Dependency Relationships | 185 | DEP-001 – DEP-185 |
+| Business Processes (traceability) | 32 | BP-01 – BP-32 |
+
+### MoSCoW Distribution
+
+| Priority | Count | Percentage |
+|----------|-------|------------|
+| Must Have | 55 | 61% |
+| Should Have | 26 | 29% |
+| Could Have | 6 | 7% |
+| Won't Have (Current Release) | 3 | 3% |
+
+### Foundational Requirements
+
+- **FR-001** — Product master
+- **FR-005** — Location master
+- **FR-011** — Reason codes
+- **FR-081** — Access control
+
+---
+
+# Part 0: Introduction
+
+## Scope
+
+This specification covers inventory management capabilities for a multi-location distribution and retail organization, including master data, inbound logistics, visibility, control, fulfillment, replenishment, transfers, returns, reporting, notifications, access control, and governance.
+
+## Out of Scope
+
+Per project scope, this specification excludes: ERP/finance modules, CRM, manufacturing/MRP, transportation management, 3PL/VMI portals, AI forecasting, marketplace integrations, and dedicated regulatory compliance modules.
+
+## Conventions
+
+| Convention | Meaning |
+|------------|---------|
+| **F-xx** | Feature identifier |
+| **FR-xxx** | Functional requirement identifier |
+| **US-xxx** | User story identifier |
+| **AC-xxx** | Acceptance criterion identifier |
+| **BP-xx** | Business process |
+| **DEP-xxx** | Dependency relationship identifier |
+
+## Traceability Model
+
+Business Process (BP) → Feature (F) → Functional Requirement (FR) → User Story (US) → Acceptance Criteria (AC), with MoSCoW Priority and Dependency (DEP).
+
+---
+
+"""
+
+PARTS = [
+    ("Part 1: Feature Catalog", "feature-catalog.md"),
+    ("Part 2: Functional Requirements", "functional-requirements.md"),
+    ("Part 3: User Stories", "user-stories.md"),
+    ("Part 4: Acceptance Criteria", "acceptance-criteria.md"),
+    ("Part 5: Requirement Priorities", "moscow-prioritization.md"),
+    ("Part 6: Requirement Dependencies", "requirements-dependency-analysis.md"),
+]
+
+
+def main():
+    with open(OUT, "w", encoding="utf-8") as outf:
+        outf.write(HEADER)
+        for title, fname in PARTS:
+            outf.write(f"\n---\n\n# {title}\n\n")
+            outf.write(body_after_header(os.path.join(BASE, fname)))
+        outf.write(APPENDIX)
+    size = os.path.getsize(OUT)
+    with open(OUT, encoding="utf-8") as f:
+        lines = sum(1 for _ in f)
+    print(f"Created {OUT}")
+    print(f"Lines: {lines}, Size: {size} bytes")
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,103 @@
+.sign-in-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--ims-primary) 0%, #1a365d 100%);
+  padding: 2rem;
+}
+
+.sign-in-card {
+  background: var(--ims-surface);
+  border-radius: 12px;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.sign-in-header {
+  text-align: center;
+  margin-bottom: 2rem;
+
+  .brand-icon {
+    display: inline-block;
+    background: var(--ims-primary);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--ims-text);
+  }
+
+  p {
+    margin: 0.5rem 0 0;
+    color: var(--ims-text-muted);
+    font-size: 0.875rem;
+  }
+}
+
+.sign-in-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+
+  label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--ims-text);
+  }
+
+  input {
+    padding: 0.625rem 0.75rem;
+    border: 1px solid var(--ims-border);
+    border-radius: 6px;
+    font-size: 0.875rem;
+
+    &:focus {
+      outline: none;
+      border-color: var(--ims-primary);
+      box-shadow: 0 0 0 3px var(--ims-primary-light);
+    }
+  }
+}
+
+.btn-primary {
+  padding: 0.75rem;
+  background: var(--ims-primary);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.5rem;
+
+  &:hover {
+    background: var(--ims-primary-dark);
+  }
+}
+
+.demo-hint {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--ims-border);
+  font-size: 0.8125rem;
+  color: var(--ims-text-muted);
+
+  ul {
+    margin: 0.5rem 0 0;
+    padding-left: 1.25rem;
+  }
+}

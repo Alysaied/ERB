@@ -1,0 +1,30 @@
+.kpi-summary-card {
+  background: var(--ims-surface);
+  border: 1px solid var(--ims-border);
+  border-radius: 8px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.kpi-label {
+  font-size: 0.8125rem;
+  color: var(--ims-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.kpi-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--ims-text);
+}
+
+.kpi-trend {
+  font-size: 0.8125rem;
+  font-weight: 500;
+
+  &.positive { color: var(--ims-success); }
+  &.negative { color: var(--ims-danger); }
+}

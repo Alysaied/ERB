@@ -1,0 +1,11 @@
+<div class="page-title-bar">
+  <div class="title-content">
+    <h1 class="page-title">{{ title }}</h1>
+  @if (subtitle) {
+    <p class="page-subtitle">{{ subtitle }}</p>
+  }
+  </div>
+  <div class="title-actions">
+    <ng-content select="[actions]"></ng-content>
+  </div>
+</div>

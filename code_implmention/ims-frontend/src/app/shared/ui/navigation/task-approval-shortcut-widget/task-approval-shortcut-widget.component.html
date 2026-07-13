@@ -1,0 +1,10 @@
+<div class="task-widget">
+  <p class="task-summary">{{ pendingCount }} items awaiting action</p>
+  <ul class="task-list">
+  @for (task of tasks; track task.route) {
+    <li>
+      <a [routerLink]="task.route">{{ task.label }} <span class="count">({{ task.count }})</span></a>
+    </li>
+  }
+  </ul>
+</div>

@@ -1,0 +1,12 @@
+@if (activeModule?.children?.length) {
+  <aside class="secondary-nav" aria-label="Section navigation">
+    <h3 class="secondary-nav-title">{{ activeModule!.label }}</h3>
+    <ul class="secondary-nav-list">
+    @for (child of activeModule!.children; track child.route) {
+      <li>
+        <a [routerLink]="child.route" routerLinkActive="active" class="secondary-nav-link">{{ child.label }}</a>
+      </li>
+    }
+    </ul>
+  </aside>
+}

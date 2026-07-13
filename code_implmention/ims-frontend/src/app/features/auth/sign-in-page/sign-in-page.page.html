@@ -1,0 +1,33 @@
+<div class="sign-in-page">
+  <div class="sign-in-card">
+    <div class="sign-in-header">
+      <span class="brand-icon">IMS</span>
+      <h1>Inventory Management System</h1>
+      <p>Sign in to your account</p>
+    </div>
+
+  @if (errorMessage()) {
+    <ims-success-warning-error-banner type="error" [message]="errorMessage()"></ims-success-warning-error-banner>
+  }
+
+    <form class="sign-in-form" (ngSubmit)="signIn()">
+      <div class="form-field">
+        <label for="email">Email</label>
+        <input id="email" type="email" [(ngModel)]="email" name="email" required />
+      </div>
+      <div class="form-field">
+        <label for="password">Password</label>
+        <input id="password" type="password" [(ngModel)]="password" name="password" required />
+      </div>
+      <button type="submit" class="btn-primary">Sign In</button>
+    </form>
+
+    <div class="demo-hint">
+      <p>Demo accounts:</p>
+      <ul>
+        <li>admin&#64;ims.local / demo</li>
+        <li>warehouse&#64;ims.local / demo</li>
+      </ul>
+    </div>
+  </div>
+</div>

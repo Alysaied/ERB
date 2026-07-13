@@ -1,0 +1,7 @@
+<div class="kpi-summary-card">
+  <span class="kpi-label">{{ label }}</span>
+  <span class="kpi-value">{{ value }}</span>
+  @if (trend) {
+    <span class="kpi-trend" [class.positive]="trend.startsWith('+')" [class.negative]="trend.startsWith('-')">{{ trend }}</span>
+  }
+</div>

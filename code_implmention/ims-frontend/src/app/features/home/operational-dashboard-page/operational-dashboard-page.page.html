@@ -1,0 +1,48 @@
+<div class="page operational-dashboard-page">
+  <ims-breadcrumb-trail [items]="[{ label: 'Home', route: '/home/operations' }, { label: title }]"></ims-breadcrumb-trail>
+  <ims-page-title-bar [title]="title" [subtitle]="description"></ims-page-title-bar>
+
+  <section class="dashboard-content">
+  @if (data) {
+    <div class="kpi-grid">
+    @for (kpi of data.kpis; track kpi.label) {
+      <ims-kpi-summary-card [label]="kpi.label" [value]="kpi.value" [trend]="kpi.trend"></ims-kpi-summary-card>
+    }
+    </div>
+
+    <div class="dashboard-panels">
+      <div class="panel stock-health">
+        <h3>Stock Health</h3>
+        <div class="health-bars">
+          <div class="health-item healthy">
+            <span class="health-label">Healthy</span>
+            <span class="health-value">{{ data.stockHealth.healthy }}%</span>
+          </div>
+          <div class="health-item warning">
+            <span class="health-label">Warning</span>
+            <span class="health-value">{{ data.stockHealth.warning }}%</span>
+          </div>
+          <div class="health-item critical">
+            <span class="health-label">Critical</span>
+            <span class="health-value">{{ data.stockHealth.critical }}%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel quick-actions">
+        <h3>Quick Actions</h3>
+        <div class="action-grid">
+        @for (action of quickActions; track action.route) {
+          <ims-quick-action-tile [label]="action.label" [route]="action.route"></ims-quick-action-tile>
+        }
+        </div>
+      </div>
+
+      <div class="panel tasks">
+        <h3>My Tasks</h3>
+        <ims-task-approval-shortcut-widget></ims-task-approval-shortcut-widget>
+      </div>
+    </div>
+  }
+  </section>
+</div>

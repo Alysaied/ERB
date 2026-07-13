@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UI-001 Sign In / Session Entry</title>
+  <style>
+    :root {
+      --bg-app: #F9FAFB;
+      --surface: #FFFFFF;
+      --surface-muted: #F3F4F6;
+      --border: #E5E7EB;
+      --text-strong: #111827;
+      --text-body: #1F2937;
+      --text-muted: #4B5563;
+      --text-subtle: #6B7280;
+      --brand-navy: #0F2A43;
+      --brand-blue: #1D4E89;
+      --brand-blue-hover: #2563A6;
+      --danger: #B91C1C;
+      --danger-bg: #FEE2E2;
+      --danger-border: #FCA5A5;
+      --shadow-soft: 0 10px 24px rgba(15, 42, 67, 0.05);
+      --focus-ring: 0 0 0 3px rgba(37, 99, 166, 0.18);
+      --radius-card: 12px;
+      --radius-control: 8px;
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --font-stack: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--bg-app);
+      color: var(--text-body);
+      font-family: var(--font-stack);
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    a {
+      color: var(--brand-blue);
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: var(--brand-blue-hover);
+      text-decoration: underline;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .page-shell {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .top-header {
+      height: 56px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 var(--space-6);
+    }
+
+    .top-header__inner {
+      width: 100%;
+      max-width: 1440px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+    }
+
+    .product-mark {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-3);
+      color: var(--brand-navy);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .product-mark__badge {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--brand-navy), var(--brand-blue));
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+    }
+
+    .header-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-4);
+      color: var(--text-subtle);
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .main-area {
+      flex: 1;
+      padding: var(--space-6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .auth-layout {
+      width: 100%;
+      max-width: 1440px;
+      display: grid;
+      place-items: center;
+      min-height: calc(100vh - 56px - 96px);
+    }
+
+    .signin-wrap {
+      width: 100%;
+      max-width: 448px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+    }
+
+    .page-copy {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      text-align: left;
+    }
+
+    .page-eyebrow {
+      margin: 0;
+      color: var(--text-subtle);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .page-title {
+      margin: 0;
+      color: var(--text-strong);
+      font-size: 28px;
+      line-height: 36px;
+      font-weight: 700;
+    }
+
+    .page-description {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .signin-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-soft);
+      padding: var(--space-6);
+    }
+
+    .signin-card__header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-4);
+      margin-bottom: var(--space-5);
+    }
+
+    .signin-card__title-group {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      min-width: 0;
+    }
+
+    .lock-icon {
+      width: 20px;
+      height: 20px;
+      color: var(--brand-navy);
+      flex: 0 0 auto;
+      margin-top: 2px;
+    }
+
+    .signin-card__title {
+      margin: 0;
+      color: var(--text-strong);
+      font-size: 20px;
+      line-height: 28px;
+      font-weight: 600;
+    }
+
+    .signin-card__subtitle {
+      margin: var(--space-1) 0 0;
+      color: var(--text-muted);
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .session-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: var(--surface-muted);
+      color: var(--text-subtle);
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .error-banner {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      margin-bottom: var(--space-4);
+      padding: var(--space-3);
+      border: 1px solid var(--danger-border);
+      border-radius: 10px;
+      background: var(--danger-bg);
+      color: var(--danger);
+    }
+
+    .error-banner svg {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+      margin-top: 1px;
+    }
+
+    .error-banner__title {
+      margin: 0 0 2px;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+    }
+
+    .error-banner__body {
+      margin: 0;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .signin-form {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .field__label {
+      color: var(--text-body);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+    }
+
+    .field__input {
+      width: 100%;
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid #D1D5DB;
+      border-radius: var(--radius-control);
+      background: #FFFFFF;
+      color: var(--text-strong);
+      font-size: 14px;
+      line-height: 20px;
+      transition: border-color 120ms ease, box-shadow 120ms ease;
+    }
+
+    .field__input::placeholder {
+      color: #9CA3AF;
+    }
+
+    .field__input:focus {
+      outline: none;
+      border-color: var(--brand-blue-hover);
+      box-shadow: var(--focus-ring);
+    }
+
+    .field--error .field__input {
+      border-color: var(--danger);
+      background: #FFF8F8;
+    }
+
+    .field--error .field__input:focus {
+      box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.14);
+    }
+
+    .field__helper,
+    .field__error {
+      margin: 0;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .field__helper {
+      color: var(--text-subtle);
+    }
+
+    .field__error {
+      color: var(--danger);
+    }
+
+    .password-row {
+      position: relative;
+    }
+
+    .password-row .field__input {
+      padding-right: 40px;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 0;
+      background: transparent;
+      color: var(--text-subtle);
+      padding: 4px;
+      cursor: pointer;
+    }
+
+    .form-inline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+    }
+
+    .checkbox {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: 14px;
+      color: var(--text-body);
+      cursor: pointer;
+    }
+
+    .checkbox input {
+      margin: 0;
+      width: 16px;
+      height: 16px;
+      accent-color: var(--brand-blue);
+    }
+
+    .primary-button {
+      width: 100%;
+      height: 40px;
+      border: none;
+      border-radius: var(--radius-control);
+      background: var(--brand-blue);
+      color: #FFFFFF;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      cursor: pointer;
+      transition: background 120ms ease, transform 120ms ease;
+    }
+
+    .primary-button:hover {
+      background: var(--brand-blue-hover);
+    }
+
+    .primary-button:focus-visible,
+    .password-toggle:focus-visible,
+    .checkbox input:focus-visible,
+    .text-link:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: 8px;
+    }
+
+    .primary-button:active {
+      transform: translateY(1px);
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-4);
+      margin-top: var(--space-5);
+      padding-top: var(--space-4);
+      border-top: 1px solid var(--border);
+    }
+
+    .card-footer__meta {
+      color: var(--text-subtle);
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .card-footer__note {
+      margin: 0;
+      color: var(--text-subtle);
+      font-size: 13px;
+      line-height: 18px;
+      max-width: 240px;
+      text-align: right;
+    }
+
+    .app-footer {
+      padding: 0 var(--space-6) var(--space-6);
+    }
+
+    .app-footer__inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .app-footer__content {
+      width: 100%;
+      max-width: 448px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      color: var(--text-subtle);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 16px;
+    }
+
+    .app-footer__links {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
+    @media (max-width: 1024px) {
+      .signin-wrap,
+      .app-footer__content {
+        max-width: 420px;
+      }
+
+      .main-area {
+        padding: 24px 20px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .top-header {
+        height: auto;
+        padding: 12px 16px;
+      }
+
+      .top-header__inner,
+      .header-meta,
+      .form-inline,
+      .card-footer,
+      .app-footer__content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .header-meta,
+      .app-footer__links {
+        gap: 12px;
+      }
+
+      .main-area {
+        align-items: stretch;
+        padding: 24px 16px;
+      }
+
+      .auth-layout {
+        min-height: auto;
+      }
+
+      .signin-wrap {
+        max-width: none;
+      }
+
+      .signin-card {
+        width: 100%;
+      }
+
+      .signin-card__header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .card-footer__note,
+      .app-footer__links {
+        text-align: left;
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="top-header" aria-label="Unauthenticated header">
+      <div class="top-header__inner">
+        <div class="product-mark">
+          <span class="product-mark__badge" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+              <path d="M3 7.5 12 3l9 4.5"></path>
+              <path d="M3 7.5V16.5L12 21l9-4.5V7.5"></path>
+              <path d="M12 21V12"></path>
+              <path d="M21 7.5 12 12 3 7.5"></path>
+            </svg>
+          </span>
+          <span>Inventory Management System</span>
+        </div>
+        <div class="header-meta" aria-label="Environment metadata">
+          <span>Enterprise Access</span>
+          <span>Session Entry</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-area">
+      <div class="auth-layout">
+        <section class="signin-wrap" aria-labelledby="page-title">
+          <div class="page-copy">
+            <p class="page-eyebrow">Secure Access</p>
+            <h1 class="page-title" id="page-title">Sign in to continue</h1>
+            <p class="page-description">
+              Access inventory, procurement, warehouse, and fulfillment workflows using your authorized IMS credentials.
+            </p>
+          </div>
+
+          <div class="signin-card">
+            <div class="signin-card__header">
+              <div class="signin-card__title-group">
+                <svg class="lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="4" y="11" width="16" height="9" rx="2"></rect>
+                  <path d="M8 11V8a4 4 0 1 1 8 0v3"></path>
+                </svg>
+                <div>
+                  <h2 class="signin-card__title">Session entry</h2>
+                  <p class="signin-card__subtitle">Use your assigned account to enter the system securely.</p>
+                </div>
+              </div>
+              <div class="session-badge">v2.4.1</div>
+            </div>
+
+            <div class="error-banner" role="alert" aria-live="assertive">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="9"></circle>
+                <path d="M12 8v5"></path>
+                <path d="M12 16h.01"></path>
+              </svg>
+              <div>
+                <p class="error-banner__title">We could not sign you in</p>
+                <p class="error-banner__body">The username or password is incorrect. Verify your credentials and try again, or use the help link below.</p>
+              </div>
+            </div>
+
+            <form class="signin-form">
+              <div class="field">
+                <label class="field__label" for="username">Username or email</label>
+                <input
+                  class="field__input"
+                  id="username"
+                  name="username"
+                  type="text"
+                  autocomplete="username"
+                  placeholder="Enter your work email or user ID"
+                  value="warehouse.manager@ims.local"
+                >
+                <p class="field__helper">Use your corporate email address or assigned IMS username.</p>
+              </div>
+
+              <div class="field field--error">
+                <label class="field__label" for="password">Password</label>
+                <div class="password-row">
+                  <input
+                    class="field__input"
+                    id="password"
+                    name="password"
+                    type="password"
+                    autocomplete="current-password"
+                    placeholder="Enter your password"
+                    aria-describedby="password-error"
+                  >
+                  <button class="password-toggle" type="button" aria-label="Show password">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true">
+                      <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  </button>
+                </div>
+                <p class="field__error" id="password-error">Password is required to authenticate your session.</p>
+              </div>
+
+              <div class="form-inline">
+                <label class="checkbox" for="remember-me">
+                  <input id="remember-me" name="remember-me" type="checkbox">
+                  <span>Remember me on this device</span>
+                </label>
+                <a class="text-link" href="#" aria-label="Forgot password or need help">Forgot password</a>
+              </div>
+
+              <button class="primary-button" type="submit">Sign In</button>
+            </form>
+
+            <div class="card-footer">
+              <div class="card-footer__meta">
+                Environment: Production<br>
+                Region: Primary Operations
+              </div>
+              <p class="card-footer__note">
+                Protected by enterprise session controls, credential policies, and activity monitoring.
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="app-footer">
+      <div class="app-footer__inner">
+        <div class="app-footer__content">
+          <span>IMS Platform v2.4.1</span>
+          <div class="app-footer__links">
+            <a href="#">Privacy</a>
+            <a href="#">Security Notice</a>
+            <a href="#">Need Help</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

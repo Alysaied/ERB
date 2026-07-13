@@ -1,0 +1,12 @@
+{
+  "name": "ims-srs-pdf-builder",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build-srs-pdf.mjs"
+  },
+  "dependencies": {
+    "marked": "^15.0.12",
+    "puppeteer": "^24.8.2"
+  }
+}
