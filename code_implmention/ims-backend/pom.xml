@@ -21,6 +21,8 @@
   <modules>
     <module>ims-shared-kernel</module>
     <module>ims-identity</module>
+    <module>ims-audit</module>
+    <module>ims-governance</module>
     <module>ims-application</module>
   </modules>
 
@@ -44,6 +46,16 @@
         <artifactId>ims-shared-kernel</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>com.ims</groupId>
+        <artifactId>ims-audit</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+        <dependency>
+            <groupId>com.ims</groupId>
+            <artifactId>ims-governance</artifactId>
+            <version>${project.version}</version>
+        </dependency>
       <dependency>
         <groupId>com.ims</groupId>
         <artifactId>ims-identity</artifactId>

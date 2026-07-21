@@ -76,6 +76,14 @@
       <artifactId>spring-modulith-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.ims</groupId>
+      <artifactId>ims-audit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.ims</groupId>
+      <artifactId>ims-governance</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
