@@ -134,4 +134,11 @@ public class UserAccount {
     public Integer getVersion() {
         return version;
     }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+    public Instant getUpdateAt(){
+        return updatedAt;
+    }
 }

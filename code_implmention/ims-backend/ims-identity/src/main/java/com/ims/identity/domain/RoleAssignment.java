@@ -87,4 +87,21 @@ public class RoleAssignment {
         }
         return effectiveTo == null || !today.isAfter(effectiveTo);
     }
+    public static RoleAssignment assign(
+            Long userAccountId,
+            String roleName,
+            String permissionSet,
+            LocalDate effectiveFrom,
+            LocalDate effectiveTo
+    ){
+        RoleAssignment assignment = new RoleAssignment();
+        assignment.userAccountId=userAccountId;
+        assignment.roleName=roleName;
+        assignment.permissionSet=permissionSet;
+        assignment.effectiveFrom=effectiveFrom;
+        assignment.effectiveTo=effectiveTo;
+        assignment.sodCompliant=true;
+        assignment.createdAt=Instant.now();
+        return assignment;
+    }
 }

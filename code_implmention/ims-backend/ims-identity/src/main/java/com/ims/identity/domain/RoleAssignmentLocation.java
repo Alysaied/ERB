@@ -6,7 +6,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Getter;
 
+import java.time.Instant;
+
+@Getter
 @Entity
 @Table(name = "role_assignment_locations", schema = "identity")
 public class RoleAssignmentLocation {
@@ -21,18 +25,22 @@ public class RoleAssignmentLocation {
     @Column(name = "location_code", nullable = false, length = 64)
     private String locationCode;
 
+    @Column(name="created_at",nullable = false)
+    private Instant createdAt = Instant.now();
+
     protected RoleAssignmentLocation() {
     }
 
-    public Long getId() {
-        return id;
+    public static RoleAssignmentLocation of(
+        Long roleAssignmentId,
+        String locationCode
+    ){
+        RoleAssignmentLocation location=new RoleAssignmentLocation();
+        location.roleAssignmentId= roleAssignmentId;
+        location.locationCode= locationCode;
+        location.createdAt= Instant.now();
+        return location;
+
     }
 
-    public Long getRoleAssignmentId() {
-        return roleAssignmentId;
-    }
-
-    public String getLocationCode() {
-        return locationCode;
-    }
 }

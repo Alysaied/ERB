@@ -29,6 +29,13 @@ public class PermissionCatalog {
                     "PERM-FULFILL"
             )
     );
+    public boolean isKnownRole(String roleCode) {
+        return ROLE_PERMISSIONS.containsKey(roleCode);
+    }
+
+    public String permissionSetFor(String roleCode) {
+        return String.join(",", ROLE_PERMISSIONS.getOrDefault(roleCode, List.of()));
+    }
 
     public List<String> resolve(List<String> roles) {
         Set<String> permissions = new LinkedHashSet<>();
