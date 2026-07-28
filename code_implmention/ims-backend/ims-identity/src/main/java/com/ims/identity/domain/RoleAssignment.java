@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.transaction.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -45,6 +46,10 @@ public class RoleAssignment {
     protected RoleAssignment() {
     }
 
+    @Transactional
+    public void revoke(){
+        this.assignmentStatus="INACTIVE";
+    }
     public Long getId() {
         return id;
     }

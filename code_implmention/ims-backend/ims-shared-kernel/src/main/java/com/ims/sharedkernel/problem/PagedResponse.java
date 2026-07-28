@@ -1,0 +1,12 @@
+package com.ims.sharedkernel.problem;
+
+import java.util.List;
+
+public record PagedResponse<T>(
+        List<T> data,
+        int page,
+        int pageSize,
+        long totalElements,
+        int totalPages
+) {
+}
