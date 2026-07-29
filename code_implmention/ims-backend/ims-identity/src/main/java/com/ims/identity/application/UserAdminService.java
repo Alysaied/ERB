@@ -1,6 +1,8 @@
 package com.ims.identity.application;
 
 import com.ims.identity.DTO.*;
+import com.ims.identity.application.port.DirectorySyncPort;
+import com.ims.identity.application.port.DirectoryUser;
 import com.ims.identity.domain.AccountStatus;
 import com.ims.identity.domain.RoleAssignment;
 import com.ims.identity.domain.RoleAssignmentLocation;
@@ -27,15 +29,18 @@ public class UserAdminService {
     private final  PermissionCatalog permissionCatalog;
     private final RoleAssignmentRepository roleAssignmentRepository;
     private final RoleAssignmentLocationRepository roleAssignmentLocationRepository;
+    private final DirectorySyncPort directorySyncPort;
 
     UserAdminService( UserAccountRepository _userAccountRepository,
                       PermissionCatalog permissionCatalog,
                       RoleAssignmentRepository roleAssignmentRepository,
-                      RoleAssignmentLocationRepository roleAssignmentLocationRepository){
+                      RoleAssignmentLocationRepository roleAssignmentLocationRepository,
+                      DirectorySyncPort directorySyncPort){
         this._userAccountRepository=_userAccountRepository;
         this.permissionCatalog=permissionCatalog;
         this.roleAssignmentRepository=roleAssignmentRepository;
         this.roleAssignmentLocationRepository=roleAssignmentLocationRepository;
+        this.directorySyncPort = directorySyncPort;
 
     }
 
@@ -419,6 +424,150 @@ public class UserAdminService {
                         "system admin"
                 )
         );
+    }
+
+    @Transactional
+    public DirectorySyncResultResponse syncUsers(SyncUsersFromDirectoryRequest request) {
+        String syncMode = request.syncMode().trim().toUpperCase(Locale.ROOT);
+        if (!syncMode.equals("FULL") && !syncMode.equals("INCREMENTAL")) {
+            throw new DomainException(
+                    "INVALID_SYNC_MODE",
+                    "syncMode must be FULL or INCREMENTAL",
+                    400
+            );
+        }
+        if (syncMode.equals("INCREMENTAL") && request.sinceTimestamp() == null) {
+            throw new DomainException(
+                    "SINCE_TIMESTAMP_REQUIRED",
+                    "sinceTimestamp is required when syncMode is INCREMENTAL",
+                    400
+            );
+        }
+
+        boolean dryRun = Boolean.TRUE.equals(request.dryRun());
+        Instant since = syncMode.equals("INCREMENTAL") ? request.sinceTimestamp() : null;
+
+        List<DirectoryUser> directoryUsers;
+        try {
+            directoryUsers = directorySyncPort.fetchUsers(since);
+        } catch (Exception ex) {
+            throw new DomainException(
+                    "DIRECTORY_SYNC_FAILED",
+                    "Failed to fetch users from directory",
+                    500
+            );
+        }
+
+        int created = 0;
+        int updated = 0;
+        int deactivated = 0;
+        List<SyncErrorResponse> errors = new ArrayList<>();
+
+        for (DirectoryUser directoryUser : directoryUsers) {
+            try {
+                if (directoryUser.active()) {
+                    int result = syncActiveDirectoryUser(directoryUser, dryRun);
+                    if (result == 1) {
+                        created++;
+                    } else if (result == 2) {
+                        updated++;
+                    }
+                } else {
+                    if (syncTerminatedDirectoryUser(directoryUser, dryRun)) {
+                        deactivated++;
+                    }
+                }
+            } catch (DomainException ex) {
+                errors.add(new SyncErrorResponse(
+                        directoryUser.userId(),
+                        ex.getErrorCode(),
+                        ex.getMessage()
+                ));
+            } catch (Exception ex) {
+                errors.add(new SyncErrorResponse(
+                        directoryUser.userId(),
+                        "SYNC_ROW_FAILED",
+                        ex.getMessage() == null ? "Unexpected sync error" : ex.getMessage()
+                ));
+            }
+        }
+
+        return new DirectorySyncResultResponse(
+                syncMode,
+                created,
+                updated,
+                deactivated,
+                List.copyOf(errors),
+                Instant.now()
+        );
+    }
+
+    /**
+     * @return 1 created, 2 updated, 0 unchanged
+     */
+    private int syncActiveDirectoryUser(DirectoryUser directoryUser, boolean dryRun) {
+        Optional<UserAccount> existing =
+                _userAccountRepository.findByUserIdentifier(directoryUser.userId());
+
+        if (existing.isEmpty()) {
+            assertEmailAvailable(directoryUser.email(), null);
+            if (!dryRun) {
+                UserAccount created = new UserAccount(
+                        directoryUser.userId(),
+                        directoryUser.displayName(),
+                        directoryUser.email(),
+                        null,
+                        LocalDate.now()
+                );
+                _userAccountRepository.save(created);
+            }
+            return 1;
+        }
+
+        UserAccount user = existing.get();
+        assertEmailAvailable(directoryUser.email(), user.getUserIdentifier());
+        boolean nameChanged = directoryUser.displayName() != null
+                && !directoryUser.displayName().equals(user.getDisplayName());
+        boolean emailChanged = directoryUser.email() != null
+                && !directoryUser.email().equalsIgnoreCase(user.getEmail() == null ? "" : user.getEmail());
+        boolean changed = nameChanged || emailChanged;
+        if (changed && !dryRun) {
+            user.applyDirectoryProfile(directoryUser.displayName(), directoryUser.email());
+            _userAccountRepository.save(user);
+        }
+        return changed ? 2 : 0;
+    }
+
+    private boolean syncTerminatedDirectoryUser(DirectoryUser directoryUser, boolean dryRun) {
+        Optional<UserAccount> existing =
+                _userAccountRepository.findByUserIdentifier(directoryUser.userId());
+        if (existing.isEmpty()) {
+            return false;
+        }
+        UserAccount user = existing.get();
+        if (user.getAccountStatus() == AccountStatus.DEACTIVATED) {
+            return false;
+        }
+        if (!dryRun) {
+            user.deactivated();
+            _userAccountRepository.save(user);
+        }
+        return true;
+    }
+
+    private void assertEmailAvailable(String email, String currentUserId) {
+        if (email == null || email.isBlank()) {
+            return;
+        }
+        _userAccountRepository.findByEmailIgnoreCase(email.trim()).ifPresent(other -> {
+            if (currentUserId == null || !other.getUserIdentifier().equals(currentUserId)) {
+                throw new DomainException(
+                        "EMAIL_ALREADY_EXISTS",
+                        "Email already used by another user: " + email,
+                        422
+                );
+            }
+        });
     }
 
 

@@ -68,4 +68,9 @@ public class UserAdminController {
         return _userAdminService.deactivate(userId.trim(),request);
         }
 
+    @PostMapping("/users/sync")
+    DirectorySyncResultResponse syncUsers(@Valid @RequestBody SyncUsersFromDirectoryRequest request) {
+        return _userAdminService.syncUsers(request);
+    }
+
 }

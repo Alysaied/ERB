@@ -89,6 +89,22 @@ public class UserAccount {
          this.updatedAt= Instant.now();
     }
 
+    public boolean applyDirectoryProfile(String displayName, String email) {
+        boolean changed = false;
+        if (displayName != null && !displayName.equals(this.displayName)) {
+            this.displayName = displayName;
+            changed = true;
+        }
+        if (email != null && !email.equalsIgnoreCase(this.email == null ? "" : this.email)) {
+            this.email = email;
+            changed = true;
+        }
+        if (changed) {
+            this.updatedAt = Instant.now();
+        }
+        return changed;
+    }
+
     public void markActivity() {
         this.lastActivityAt = Instant.now();
         this.updatedAt = this.lastActivityAt;
