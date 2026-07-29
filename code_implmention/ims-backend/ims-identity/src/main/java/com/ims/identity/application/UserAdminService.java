@@ -375,5 +375,51 @@ public class UserAdminService {
         ));
     }
 
+    @Transactional
+    public UserAccountResponse deactivate(String userId,DeactivateUserAccountRequest request){
+        UserAccount user = _userAccountRepository.findByUserIdentifier(userId).orElseThrow(
+                ()-> new DomainException(
+                        "USER NOT FOUND",
+                        "user_not_found" + userId,
+                        404
+                )
+        );
+        if(user.getAccountStatus() == AccountStatus.SUSPENDED){
+            throw  new DomainException(
+                    "USER_ALREADY_DEACTIVATED",
+                    "user_aready_deactivated : "+ userId,
+                    422
+            );
+        }
+        List <RoleAssignment> role_assignments= roleAssignmentRepository.findByUserAccountId(user.getId());
+
+        List<Long> assignmentIds= role_assignments.stream()
+                .map(RoleAssignment::getId).toList();
+        Map<Long,List<String>> locationsByAssignmentId =loadLocationsByAssignmentId(assignmentIds);
+
+        List<RoleAssignmentResponse> roles= role_assignments.stream()
+                .map(a->new RoleAssignmentResponse(
+                        String.valueOf(a.getId()),
+                        a.getRoleName(),
+                        locationsByAssignmentId.getOrDefault(a.getId(),List.of()),
+                        a.getEffectiveFrom(),a.getEffectiveTo()
+                )).toList();
+        user.deactivated();
+        _userAccountRepository.save(user);
+        return new UserAccountResponse(
+              user.getUserIdentifier(),
+                user.getEmail(),
+                user.getDisplayName(),
+                user.getAccountStatus().name(),
+                roles,
+                new AuditInfoResponse(
+                        user.getCreatedAt(),
+                        "system admin",
+                        user.getUpdateAt(),
+                        "system admin"
+                )
+        );
+    }
+
 
 }

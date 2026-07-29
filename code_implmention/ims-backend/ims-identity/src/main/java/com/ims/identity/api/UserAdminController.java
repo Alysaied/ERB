@@ -62,4 +62,10 @@ public class UserAdminController {
 
     }
 
+    @PostMapping("/users/{userId}/deactivate")
+    @ResponseStatus (HttpStatus.OK)
+        UserAccountResponse deactivate(@PathVariable String userId, @Valid @RequestBody DeactivateUserAccountRequest request){
+        return _userAdminService.deactivate(userId.trim(),request);
+        }
+
 }

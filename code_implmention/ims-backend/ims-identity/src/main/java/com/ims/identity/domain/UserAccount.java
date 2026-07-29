@@ -84,6 +84,10 @@ public class UserAccount {
         this.accountStatus = AccountStatus.SUSPENDED;
         this.updatedAt= this.lastActivityAt;
     }
+    public void deactivated(){
+        this.accountStatus = AccountStatus.DEACTIVATED;
+         this.updatedAt= Instant.now();
+    }
 
     public void markActivity() {
         this.lastActivityAt = Instant.now();
