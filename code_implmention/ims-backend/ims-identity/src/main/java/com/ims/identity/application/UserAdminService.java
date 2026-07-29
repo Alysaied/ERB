@@ -331,5 +331,49 @@ public class UserAdminService {
        );
     }
 
+    public UserAccountResponse suspend(String userId, SuspendUserAccountRequest request){
+        UserAccount user= _userAccountRepository.findByUserIdentifier(userId).orElseThrow(
+                ()->new DomainException(
+                        "USER NOT FOUND",
+                         "user not found : "+ userId,
+                        404
+                        )
+        );
+        if(user.getAccountStatus() != AccountStatus.ACTIVE){
+            throw new DomainException(
+                    "USER_ALREADY_SUSPENDED",
+                    "User is already suspended: "+ userId,
+                    422
+            );
+        }
+        List <RoleAssignment> role_assignments= roleAssignmentRepository.findByUserAccountId(user.getId());
+
+        List<Long> assignmentIds= role_assignments.stream()
+                .map(RoleAssignment::getId).toList();
+        Map<Long,List<String>> locationsByAssignmentId =loadLocationsByAssignmentId(assignmentIds);
+
+        List<RoleAssignmentResponse> roles= role_assignments.stream()
+                .map(a->new RoleAssignmentResponse(
+                        String.valueOf(a.getId()),
+                        a.getRoleName(),
+                        locationsByAssignmentId.getOrDefault(a.getId(),List.of()),
+                        a.getEffectiveFrom(),a.getEffectiveTo()
+                )).toList();
+        user.suspend();
+        _userAccountRepository.save(user);
+        return new UserAccountResponse(
+                user.getUserIdentifier(),
+                user.getEmail(),
+                user.getDisplayName(),
+                user.getAccountStatus().name(),
+                roles,
+                new AuditInfoResponse(
+                        user.getCreatedAt(),
+                        "system admin",
+                        user.getUpdateAt(),
+                        "system admin"
+        ));
+    }
+
 
 }

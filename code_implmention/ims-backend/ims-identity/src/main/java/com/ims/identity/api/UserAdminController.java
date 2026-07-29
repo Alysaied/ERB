@@ -56,4 +56,10 @@ public class UserAdminController {
         return _userAdminService.revoke(userId.trim(),roleAssignmentId);
     }
 
+    @PostMapping("/users/{userId}/suspend")
+    UserAccountResponse suspend(@PathVariable String userId, @Valid @RequestBody SuspendUserAccountRequest request){
+        return _userAdminService.suspend(userId.trim(),request);
+
+    }
+
 }

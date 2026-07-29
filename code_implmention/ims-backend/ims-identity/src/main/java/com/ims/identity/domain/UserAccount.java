@@ -80,6 +80,10 @@ public class UserAccount {
         this.createdAt = now;
         this.updatedAt = now;
     }
+    public void suspend(){
+        this.accountStatus = AccountStatus.SUSPENDED;
+        this.updatedAt= this.lastActivityAt;
+    }
 
     public void markActivity() {
         this.lastActivityAt = Instant.now();
