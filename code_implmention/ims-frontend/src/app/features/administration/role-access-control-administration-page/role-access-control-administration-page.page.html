@@ -1,10 +1,374 @@
-<div class="page role-access-control-administration-page">
-  <ims-breadcrumb-trail [items]="[{ label: 'Home', route: '/home/operations' }, { label: 'Role and Access Control Administration' }]"></ims-breadcrumb-trail>
-  <ims-page-title-bar [title]="title" [subtitle]="description"></ims-page-title-bar>
-  <section class="page-content">
-  @if (data) {
-    <pre class="mock-preview">{{ data | json }}</pre>
+<div class="page role-access-page">
+  <ims-breadcrumb-trail
+    [items]="[
+      { label: 'Home', route: '/home/operations' },
+      { label: 'Administration' },
+      { label: 'Roles & Access' },
+      { label: 'Permissions' }
+    ]"
+  ></ims-breadcrumb-trail>
+
+  <ims-page-title-bar [title]="title" [subtitle]="description">
+    <div actions class="title-meta">
+      <span class="stat-pill">{{ roles.length }} roles</span>
+      <span class="stat-pill">{{ totalAssignedUsers }} assigned users</span>
+      <span class="stat-pill stat-pill--danger">{{ conflicts.length }} SoD conflicts</span>
+    </div>
+  </ims-page-title-bar>
+
+  @if (errorMessage) {
+    <ims-success-warning-error-banner type="error" [message]="errorMessage"></ims-success-warning-error-banner>
   }
-    <ng-content></ng-content>
-  </section>
+  @if (successMessage) {
+    <ims-success-warning-error-banner type="success" [message]="successMessage"></ims-success-warning-error-banner>
+  }
+
+  @if (showConflictBanner && conflicts.length) {
+    <div class="conflict-banner">
+      <div>
+        <strong>{{ conflicts.length }} unresolved separation-of-duty conflicts on this role.</strong>
+        Review highlighted rows in the matrix below. Save is blocked until conflicts are resolved or an exception is approved.
+      </div>
+      <button type="button" class="icon-btn" (click)="dismissConflictBanner()" aria-label="Dismiss">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+  }
+
+  <div class="rac-layout">
+    <!-- LEFT: Roles -->
+    <section class="panel roles-panel">
+      <header class="panel-head">
+        <div>
+          <h2>Roles <span>({{ filteredRoles.length }} of {{ roles.length }})</span></h2>
+        </div>
+        <div class="panel-head__actions">
+          <button type="button" class="btn btn-ghost" disabled>
+            <i class="bi bi-funnel"></i>
+            Filter
+          </button>
+          <button type="button" class="btn btn-primary" (click)="openNewRoleModal()">
+            <i class="bi bi-plus-lg"></i>
+            New role
+          </button>
+        </div>
+      </header>
+
+      <div class="search-field">
+        <i class="bi bi-search"></i>
+        <input type="search" placeholder="Search roles" [(ngModel)]="roleSearch" />
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Role</th>
+              <th>Users</th>
+              <th>Scope</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (role of filteredRoles; track role.id) {
+              <tr
+                [class.is-selected]="role.id === selectedRoleId"
+                (click)="onSelectRole(role.id)"
+              >
+                <td>
+                  <div class="role-cell">
+                    <strong>
+                      @if (role.privileged) {
+                        <i class="bi bi-shield-fill-check privileged-icon"></i>
+                      }
+                      {{ role.name }}
+                    </strong>
+                    <span>
+                      {{ role.code }}
+                      @if (role.status === 'DRAFT') {
+                        <em>(Draft)</em>
+                      }
+                    </span>
+                  </div>
+                </td>
+                <td>{{ role.userCount }}</td>
+                <td>{{ scopeLabel(role.scope) }}</td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="3" class="empty">No roles match your search</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- CENTER: matrix -->
+    <section class="panel matrix-panel">
+      @if (draft; as role) {
+        <header class="role-detail-head">
+          <div>
+            <div class="role-detail-head__title">
+              <h2>{{ role.name }}</h2>
+              <code>{{ role.code }}</code>
+              <ims-status-badge
+                [status]="role.status === 'ACTIVE' ? 'Active' : 'Draft'"
+                [variant]="role.status === 'ACTIVE' ? 'success' : 'warning'"
+              ></ims-status-badge>
+              @if (role.privileged) {
+                <span class="chip chip--privileged">Privileged</span>
+              }
+            </div>
+            <p>
+              {{ role.userCount }} users · scope {{ scopeLabel(role.scope).toLowerCase() }} · last updated
+              {{ role.lastUpdatedLabel }}
+            </p>
+          </div>
+          <div class="role-detail-head__actions">
+            <button type="button" class="btn btn-secondary" disabled>Edit Role</button>
+            <button type="button" class="btn btn-ghost" disabled>View policy</button>
+          </div>
+        </header>
+
+        <div class="legend">
+          <span class="legend__label">Access</span>
+          @for (lvl of accessLevels; track lvl) {
+            <button
+              type="button"
+              class="legend__item"
+              [class.is-active]="legendFocus === lvl"
+              (click)="legendFocus = lvl"
+            >
+              <span class="level-dot" [attr.data-level]="lvl">{{ levelShort(lvl) }}</span>
+              {{ lvl === 'NONE' ? 'No Access' : (lvl.charAt(0) + lvl.slice(1).toLowerCase()) }}
+            </button>
+          }
+        </div>
+
+        <div class="matrix-scroll">
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>Permission</th>
+                <th>No Access</th>
+                <th>View</th>
+                <th>Edit</th>
+                <th>Approve</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (group of permissionGroups; track group.group) {
+                <tr class="group-row">
+                  <td colspan="5">
+                    <i class="bi" [class]="groupIcon(group.group)"></i>
+                    {{ group.group }}
+                  </td>
+                </tr>
+                @for (perm of group.permissions; track perm.id) {
+                  <tr [class.is-conflict]="isConflictRow(perm.id)">
+                    <td>
+                      <div class="perm-label">
+                        <span>{{ perm.label }}</span>
+                        @if (perm.sensitive) {
+                          <span class="tag tag--sensitive">sensitive</span>
+                        }
+                        @if (isConflictRow(perm.id)) {
+                          <span class="tag tag--conflict">conflict</span>
+                        }
+                      </div>
+                    </td>
+                    @for (lvl of accessLevels; track lvl) {
+                      <td class="level-cell">
+                        <button
+                          type="button"
+                          class="level-radio"
+                          [class.is-selected]="levelOf(perm.id) === lvl"
+                          [attr.data-level]="lvl"
+                          (click)="onSetLevel(perm.id, lvl)"
+                          [attr.aria-label]="perm.label + ' ' + lvl"
+                        >
+                          {{ levelShort(lvl) }}
+                        </button>
+                      </td>
+                    }
+                  </tr>
+                }
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="empty-state">Select a role to edit permissions</div>
+      }
+    </section>
+  </div>
+
+  <div class="rac-bottom">
+    <!-- Scope rules -->
+    <section class="panel scope-panel">
+      <header>
+        <h3>Location Scope Rules</h3>
+        <p>Where this role's permissions apply.</p>
+      </header>
+
+      @if (draft) {
+        <div class="scope-tabs">
+          @for (scope of scopeTypes; track scope) {
+            <button
+              type="button"
+              class="scope-tab"
+              [class.is-active]="draft.scope === scope"
+              (click)="onSetScope(scope)"
+            >
+              {{ scopeLabel(scope) }}
+            </button>
+          }
+        </div>
+
+        @if (draft.scope !== 'GLOBAL') {
+          <div class="region-row">
+            @for (region of draft.regions; track region) {
+              <span class="region-chip">
+                {{ region }}
+                <button type="button" (click)="onRemoveRegion(region)" aria-label="Remove region">
+                  <i class="bi bi-x"></i>
+                </button>
+              </span>
+            }
+            <div class="add-region">
+              <select [(ngModel)]="regionToAdd">
+                <option value="">+ Add region</option>
+                @for (region of availableRegionsToAdd; track region) {
+                  <option [value]="region">{{ region }}</option>
+                }
+              </select>
+              <button type="button" class="btn btn-secondary" (click)="onAddRegion()" [disabled]="!regionToAdd">
+                Add
+              </button>
+            </div>
+          </div>
+        }
+
+        <div class="toggles">
+          <label class="toggle-row">
+            <input
+              type="checkbox"
+              [ngModel]="draft.requireMfa"
+              (ngModelChange)="onToggleMfa($event)"
+            />
+            <div>
+              <strong>Require MFA</strong>
+              <span>Enforce step-up authentication for this role.</span>
+            </div>
+          </label>
+          <label class="toggle-row">
+            <input
+              type="checkbox"
+              [ngModel]="draft.restrictAfterHours"
+              (ngModelChange)="onToggleAfterHours($event)"
+            />
+            <div>
+              <strong>Restrict after-hours</strong>
+              <span>Block access outside 06:00–22:00 local.</span>
+            </div>
+          </label>
+        </div>
+      }
+    </section>
+
+    <!-- SoD panel -->
+    <section class="panel sod-panel">
+      <header>
+        <h3>Conflict &amp; SoD</h3>
+        <p>Separation of duty checks.</p>
+      </header>
+
+      <div class="sod-list">
+        @for (conflict of conflicts; track conflict.id) {
+          <article class="sod-card">
+            <div>
+              <strong>{{ conflict.title }}</strong>
+              <p>{{ conflict.detail }}</p>
+            </div>
+            <button type="button" class="link-btn" (click)="resolveConflict(conflict)">Resolve</button>
+          </article>
+        } @empty {
+          <div class="empty">No SoD conflicts on this role</div>
+        }
+      </div>
+
+      <footer class="sod-footer">
+        <span>3 rules · {{ conflicts.length }} triggered</span>
+        <button type="button" class="btn btn-validate" (click)="onValidateSod()" [disabled]="loading">
+          Validate SoD
+        </button>
+      </footer>
+
+      @if (evaluateResult) {
+        <p class="evaluate-hint">
+          Backend evaluate:
+          {{ evaluateResult.authorized ? 'authorized' : 'denied' }}
+          @if (evaluateResult.denialReason) {
+            — {{ evaluateResult.denialReason }}
+          }
+        </p>
+      }
+    </section>
+  </div>
+
+  <footer class="sticky-footer" [class.has-conflicts]="saveBlocked">
+    <div class="sticky-footer__left">
+      @if (dirty && draft) {
+        <span>Unsaved changes on {{ draft.name }}</span>
+      } @else {
+        <span>No unsaved changes</span>
+      }
+      @if (saveBlocked) {
+        <span class="block-pill">{{ conflicts.length }} conflicts blocking save</span>
+      }
+    </div>
+    <div class="sticky-footer__right">
+      <button type="button" class="btn btn-ghost" (click)="onReset()" [disabled]="!dirty || loading">
+        Reset Changes
+      </button>
+      <button type="button" class="btn btn-validate" (click)="onValidateSod()" [disabled]="loading">
+        Validate SoD
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="onSave()"
+        [disabled]="!dirty || saveBlocked || loading"
+      >
+        Save
+      </button>
+    </div>
+  </footer>
 </div>
+
+@if (showNewRoleModal) {
+  <div class="modal-backdrop" (click)="closeNewRoleModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+      <header>
+        <h2>New role</h2>
+        <button type="button" class="icon-btn" (click)="closeNewRoleModal()" aria-label="Close">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </header>
+      <form class="modal-form" (ngSubmit)="submitNewRole()">
+        <label class="field">
+          <span>Role name</span>
+          <input [(ngModel)]="newRoleName" name="newRoleName" required />
+        </label>
+        <label class="field">
+          <span>Role code</span>
+          <input [(ngModel)]="newRoleCode" name="newRoleCode" required placeholder="e.g. INV_OPS" />
+        </label>
+        <footer class="modal-actions">
+          <button type="button" class="btn btn-secondary" (click)="closeNewRoleModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create draft</button>
+        </footer>
+      </form>
+    </div>
+  </div>
+}

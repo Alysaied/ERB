@@ -82,7 +82,7 @@ public class UserAccount {
     }
     public void suspend(){
         this.accountStatus = AccountStatus.SUSPENDED;
-        this.updatedAt= this.lastActivityAt;
+        this.updatedAt = Instant.now();
     }
     public void deactivated(){
         this.accountStatus = AccountStatus.DEACTIVATED;
@@ -101,6 +101,16 @@ public class UserAccount {
         }
         if (changed) {
             this.updatedAt = Instant.now();
+        }
+        return changed;
+    }
+
+    public boolean updateProfile(String displayName, String email, LocalDate effectiveFrom) {
+        boolean changed = applyDirectoryProfile(displayName, email);
+        if (effectiveFrom != null && !effectiveFrom.equals(this.effectiveFrom)) {
+            this.effectiveFrom = effectiveFrom;
+            this.updatedAt = Instant.now();
+            changed = true;
         }
         return changed;
     }

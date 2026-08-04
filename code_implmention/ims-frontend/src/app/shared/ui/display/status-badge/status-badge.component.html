@@ -1,3 +1,5 @@
-<div class="status-badge">
+<span class="status-badge" [class]="'status-badge--' + variant">
+  <span class="status-badge__dot" aria-hidden="true"></span>
+  <span class="status-badge__label">{{ status }}</span>
   <ng-content></ng-content>
-</div>
+</span>
