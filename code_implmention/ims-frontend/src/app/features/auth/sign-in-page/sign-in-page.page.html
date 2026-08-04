@@ -1,33 +1,85 @@
 <div class="sign-in-page">
-  <div class="sign-in-card">
-    <div class="sign-in-header">
-      <span class="brand-icon">IMS</span>
-      <h1>Inventory Management System</h1>
-      <p>Sign in to your account</p>
+  <header class="sign-in-topbar">
+    <div class="sign-in-topbar__brand">
+      <span class="sign-in-topbar__logo" aria-hidden="true">
+        <i class="bi bi-box-seam"></i>
+      </span>
+      <span class="sign-in-topbar__title">Inventory Management System</span>
+    </div>
+  </header>
+
+  <main class="sign-in-main">
+    <div class="sign-in-intro">
+      <h1>Inventory Management</h1>
+      <p>Sign in to access your enterprise account</p>
     </div>
 
-  @if (errorMessage()) {
-    <ims-success-warning-error-banner type="error" [message]="errorMessage()"></ims-success-warning-error-banner>
-  }
-
-    <form class="sign-in-form" (ngSubmit)="signIn()">
-      <div class="form-field">
-        <label for="email">Email</label>
-        <input id="email" type="email" [(ngModel)]="email" name="email" required />
+    <section class="sign-in-card">
+      <div class="sign-in-card__intro">
+        <span class="sign-in-card__lock" aria-hidden="true">
+          <i class="bi bi-lock"></i>
+        </span>
+        <h2>Sign in to your account</h2>
+        <p>Enter your credentials to access the system.</p>
       </div>
-      <div class="form-field">
-        <label for="password">Password</label>
-        <input id="password" type="password" [(ngModel)]="password" name="password" required />
-      </div>
-      <button type="submit" class="btn-primary">Sign In</button>
-    </form>
 
-    <div class="demo-hint">
-      <p>Demo accounts:</p>
-      <ul>
-        <li>admin&#64;ims.local / demo</li>
-        <li>warehouse&#64;ims.local / demo</li>
-      </ul>
+      @if (errorMessage()) {
+        <ims-success-warning-error-banner
+          type="error"
+          [message]="errorMessage()"
+        ></ims-success-warning-error-banner>
+      }
+
+      <form class="sign-in-form" (ngSubmit)="signIn()">
+        <div class="form-field">
+          <label for="email">Email or username</label>
+          <input
+            id="email"
+            type="email"
+            name="email"
+            [(ngModel)]="email"
+            placeholder="name@company.com"
+            autocomplete="username"
+            required
+          />
+        </div>
+
+        <div class="form-field">
+          <label for="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            name="password"
+            [(ngModel)]="password"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+            required
+          />
+        </div>
+
+        <label class="remember-me">
+          <input type="checkbox" name="rememberMe" [(ngModel)]="rememberMe" />
+          <span>Remember me</span>
+        </label>
+
+        <button type="submit" class="btn-primary" [disabled]="submitting()">
+          {{ submitting() ? 'Signing in…' : 'Sign In' }}
+        </button>
+
+        <div class="sign-in-links">
+          <a class="link-primary" href="#" (click)="onForgotPassword($event)">Forgot password?</a>
+          <a class="link-muted" href="#" (click)="onNeedHelp($event)">Need help?</a>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer class="sign-in-footer">
+    <span>Version 2.4.0</span>
+    <div class="sign-in-footer__links">
+      <a href="#" (click)="$event.preventDefault()">Privacy</a>
+      <a href="#" (click)="$event.preventDefault()">Security</a>
     </div>
-  </div>
+    <span>Secured by enterprise authentication</span>
+  </footer>
 </div>

@@ -18,6 +18,7 @@ export class SignInPage implements OnInit {
 
   email = 'admin@ims.local';
   password = 'demo';
+  rememberMe = false;
   errorMessage = signal('');
   submitting = signal(false);
   readonly screenId = 'UI-001';
@@ -28,7 +29,7 @@ export class SignInPage implements OnInit {
     this.errorMessage.set('');
     this.submitting.set(true);
     try {
-      const ok = await this.auth.signIn(this.email, this.password);
+      const ok = await this.auth.signIn(this.email, this.password, this.rememberMe);
       if (ok) {
         await this.router.navigate(['/home/operations']);
       } else {
@@ -37,5 +38,15 @@ export class SignInPage implements OnInit {
     } finally {
       this.submitting.set(false);
     }
+  }
+
+  onForgotPassword(event: Event): void {
+    event.preventDefault();
+    this.errorMessage.set('Password recovery is not available in this release. Contact your administrator.');
+  }
+
+  onNeedHelp(event: Event): void {
+    event.preventDefault();
+    this.errorMessage.set('Need help signing in? Contact your system administrator.');
   }
 }

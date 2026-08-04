@@ -51,8 +51,10 @@ export class AuthService {
   readonly isAuthenticated = computed(() => this._user() !== null && !!this._token());
 
   constructor() {
-    const storedToken = sessionStorage.getItem(TOKEN_KEY);
-    const storedSession = sessionStorage.getItem(SESSION_KEY);
+    const storedToken =
+      sessionStorage.getItem(TOKEN_KEY) ?? localStorage.getItem(TOKEN_KEY);
+    const storedSession =
+      sessionStorage.getItem(SESSION_KEY) ?? localStorage.getItem(SESSION_KEY);
     if (storedToken && storedSession) {
       try {
         this._token.set(storedToken);
@@ -63,12 +65,12 @@ export class AuthService {
     }
   }
 
-  async signIn(email: string, password: string): Promise<boolean> {
+  async signIn(email: string, password: string, rememberMe = false): Promise<boolean> {
     try {
       const response = await firstValueFrom(
         this.http.post<TokenResponse>(`${environment.apiBaseUrl}/auth/token`, { email, password })
       );
-      this.persistSession(response.accessToken, this.toSessionUser(response.session));
+      this.persistSession(response.accessToken, this.toSessionUser(response.session), rememberMe);
       return true;
     } catch {
       return false;
@@ -95,13 +97,19 @@ export class AuthService {
     this._token.set(null);
     sessionStorage.removeItem(TOKEN_KEY);
     sessionStorage.removeItem(SESSION_KEY);
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(SESSION_KEY);
   }
 
-  private persistSession(token: string, user: SessionUser): void {
+  private persistSession(token: string, user: SessionUser, rememberMe = false): void {
     this._token.set(token);
     this._user.set(user);
-    sessionStorage.setItem(TOKEN_KEY, token);
-    sessionStorage.setItem(SESSION_KEY, JSON.stringify(user));
+    const storage = rememberMe ? localStorage : sessionStorage;
+    const other = rememberMe ? sessionStorage : localStorage;
+    other.removeItem(TOKEN_KEY);
+    other.removeItem(SESSION_KEY);
+    storage.setItem(TOKEN_KEY, token);
+    storage.setItem(SESSION_KEY, JSON.stringify(user));
   }
 
   private toSessionUser(session: SessionResponse): SessionUser {

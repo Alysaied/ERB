@@ -11,6 +11,7 @@ describe('AuthService', () => {
 
   beforeEach(() => {
     sessionStorage.clear();
+    localStorage.clear();
     TestBed.configureTestingModule({
       providers: [
         AuthService,
