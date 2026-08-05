@@ -15,7 +15,7 @@ spring:
           time_zone: UTC
   flyway:
     enabled: true
-    schemas: public,identity
+    schemas: public,identity,catalog
     default-schema: public
     create-schemas: true
   jackson:
