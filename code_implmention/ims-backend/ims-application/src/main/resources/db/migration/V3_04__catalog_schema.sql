@@ -1,0 +1,26 @@
+CREATE SCHEMA IF NOT EXISTS catalog;
+create table catalog.products(
+    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    sku VARCHAR(64)  NOT NULL ,
+    product_name VARCHAR(256)  NOT NULL ,
+    description TEXT ,
+    unit_of_measure VARCHAR (16) NOT NULL  ,
+    category_code VARCHAR(64) ,
+    lifecycle_status VARCHAR(32) NOT NULL DEFAULT 'ACTIVE',
+    abc_classification VARCHAR(1) ,
+    is_shelf_life BOOLEAN  NOT NULL  DEFAULT FALSE,
+    is_traceable BOOLEAN  NOT NULL  DEFAULT FALSE,
+    rotation_policy VARCHAR(8) ,
+    mrsl_days INTEGER ,
+    superseded_by_sku VARCHAR(64),
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    version INTEGER NOT NULL DEFAULT 1,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    created_by BIGINT  REFERENCES identity.user_accounts (id),
+    updated_by BIGINT  REFERENCES identity.user_accounts (id),
+    CONSTRAINT uk_products_sku UNIQUE (sku),
+    CONSTRAINT  ck_products_lifecycle CHECK (lifecycle_status IN ('ACTIVE','INACTIVE','DISCONTINUED')),
+    CONSTRAINT ck_products_abc CHECK ( abc_classification IS null OR abc_classification IN ('A', 'B','C') ),
+    CONSTRAINT ck_products_rotation CHECK ( rotation_policy IS null OR rotation_policy IN ('FIFO','FEFO') )
+)

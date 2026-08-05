@@ -24,6 +24,7 @@
     <module>ims-audit</module>
     <module>ims-governance</module>
     <module>ims-application</module>
+    <module>ims-catalog</module>
   </modules>
 
   <properties>
