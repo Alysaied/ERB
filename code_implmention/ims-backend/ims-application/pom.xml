@@ -84,6 +84,10 @@
       <groupId>com.ims</groupId>
       <artifactId>ims-governance</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.ims</groupId>
+      <artifactId>ims-catalog</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
