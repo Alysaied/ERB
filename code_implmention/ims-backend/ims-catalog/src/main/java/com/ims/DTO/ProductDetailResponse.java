@@ -1,11 +1,11 @@
 package com.ims.DTO;
 
-import java.time.Instant;
+import com.ims.identity.DTO.AuditInfoResponse;
 
 public record ProductDetailResponse(
         String sku,
         String name,
-        String lifeCycleStatus,
+        String lifecycleStatus,
         String abcClass,
         String unitOfMeasure,
         String description,
@@ -15,8 +15,7 @@ public record ProductDetailResponse(
         String rotationPolicy,
         Boolean shelfLifeManaged,
         Integer mrslThresholdDays,
-        Instant createdAt,
-        Instant updatedAt
+        AuditInfoResponse audit
 
 ) {
 }

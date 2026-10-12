@@ -4,14 +4,12 @@ import com.ims.DTO.CreateProductRequest;
 import com.ims.DTO.ProductDetailResponse;
 import com.ims.domain.Product;
 import com.ims.domain.ProductIdentifier;
+import com.ims.identity.DTO.AuditInfoResponse;
 import com.ims.infrastructure.ProductIdentifierRepository;
 import com.ims.infrastructure.ProductRepository;
 import com.ims.sharedkernel.problem.DomainException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 public class ProductCatalogService {
@@ -30,9 +28,11 @@ public class ProductCatalogService {
         String sku = request.sku().trim();
         if(productRepository.existsBySku(sku)){
             throw new DomainException(
-                    "PRODUCT_SKU_EXISTS",
+                    "CONF_DUPLICATE_SKU",
                     "Product SKU already exists : " + sku,
-                    409
+                    409,
+                    null,
+                    "VR-002"
             );
         }
         boolean traceable= Boolean.TRUE.equals(request.isTraceable());
@@ -44,14 +44,28 @@ public class ProductCatalogService {
             throw new DomainException(
                     "ROTATION_POLICY_REQUIRED",
                     "rotationPolicy is required when isTraceable is true",
-                    400
+                    400,
+                    null,
+                    "VR-003"
+
+            );
+        }
+        if(traceable && (!rotation.equals("FIFO") && !rotation.equals("FEFO")) ){
+            throw new DomainException(
+                    "INVALID_ROTATION_POLICY",
+                    "Invalid rotation policy. Only 'FIFO' and 'FEFO' are allowed when isTraceable is true",
+                    400,
+                    null,
+                    "VR-003"
             );
         }
         if(shelfLife && (request.mrslThresholdDays()==null || request.mrslThresholdDays() < 1)){
             throw new DomainException(
                     "MRSL_REQUIRED",
                     "mrslThresholdDays is required when shelfLifeManaged is true",
-                    400
+                    400,
+                    null,
+                    "VR-003"
             );
         }
         if(barcode!= null
@@ -59,7 +73,9 @@ public class ProductCatalogService {
             throw new DomainException(
                     "PRODUCT_BARCODE_EXISTS",
                     "Barcode already exists : " + barcode,
-                    409
+                    409,
+                    null,
+                    "VR-009"
             );
         }
         Product product = Product.create(
@@ -79,6 +95,12 @@ public class ProductCatalogService {
                     ProductIdentifier.barcode(product.getId(),barcode,true)
             );
         }
+        AuditInfoResponse audit= new AuditInfoResponse(
+                product.getCreatedAt(),
+                product.getCreatedBy(),
+                product.getUpdatedAt(),
+                product.getUpdatedBy()
+        );
         return new ProductDetailResponse(
                 product.getSku(),
                 product.getProductName(),
@@ -92,8 +114,7 @@ public class ProductCatalogService {
                 product.getRotationPolicy(),
                 product.getIsShelfLife(),
                 product.getMrslDays(),
-                product.getCreatedAt(),
-                product.getUpdatedAt()
+                audit
 
         );
     }

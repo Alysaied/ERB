@@ -8,6 +8,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+      show-sql: true
     open-in-view: false
     properties:
       hibernate:
@@ -49,4 +50,7 @@ ims:
 logging:
   level:
     org.springframework.security: INFO
+    org:
+      hibernate:
+        SQL=DEBUG:
     com.ims: INFO

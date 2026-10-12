@@ -216,5 +216,13 @@ public class Product {
     public Instant getUpdatedAt() {
         return updatedAt;
     }
+
+    public Long getUpdatedBy(){
+        return updatedBy;
+    }
+
+    public Long getCreatedBy(){
+        return createdBy;
+    }
 }
 

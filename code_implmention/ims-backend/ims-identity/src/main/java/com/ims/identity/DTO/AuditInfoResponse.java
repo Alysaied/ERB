@@ -11,4 +11,11 @@ public record AuditInfoResponse(
 ) {
 
 
+    public AuditInfoResponse(Instant createdAt, Long createdBy, Instant updatedAt, Long updatedBy) {
+
+        this(createdAt, createdBy != null ?
+                createdBy.toString() : null,
+                updatedAt, updatedBy != null ?
+                        updatedBy.toString() : null);
+    }
 }
