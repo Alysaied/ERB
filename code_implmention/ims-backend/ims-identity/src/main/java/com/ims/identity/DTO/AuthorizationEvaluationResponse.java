@@ -6,4 +6,8 @@ public record AuthorizationEvaluationResponse(
         String action,
         String denialReason
 ) {
+    public boolean isAuthorized() {
+        return this.authorized;
+    }
+
 }

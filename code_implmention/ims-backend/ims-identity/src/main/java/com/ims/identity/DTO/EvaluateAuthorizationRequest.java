@@ -17,4 +17,12 @@ public record EvaluateAuthorizationRequest(
 
         String locationCode
 ) {
+    public EvaluateAuthorizationRequest(String userId, String action , String resourceType , String resourceId,String locationCode){
+        this.userId=userId;
+        this.action=action;
+        this.resourceId=resourceId;
+        this.resourceType=resourceType;
+        this.locationCode=locationCode;
+
+    }
 }

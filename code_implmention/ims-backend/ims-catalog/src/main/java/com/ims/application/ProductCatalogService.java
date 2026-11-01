@@ -5,6 +5,11 @@ import com.ims.DTO.ProductDetailResponse;
 import com.ims.domain.Product;
 import com.ims.domain.ProductIdentifier;
 import com.ims.identity.DTO.AuditInfoResponse;
+import com.ims.identity.DTO.EvaluateAuthorizationRequest;
+import com.ims.identity.application.AuthorizationService;
+import com.ims.identity.domain.UserAccount;
+import com.ims.identity.infrastructure.UserAccountRepository;
+import com.ims.identity.security.ImsUserPrincipal;
 import com.ims.infrastructure.ProductIdentifierRepository;
 import com.ims.infrastructure.ProductRepository;
 import com.ims.sharedkernel.problem.DomainException;
@@ -16,15 +21,51 @@ public class ProductCatalogService {
 
     private final ProductRepository productRepository;
     private final ProductIdentifierRepository productIdentifierRepository;
+    private final UserAccountRepository userAccountRepository;
+    private final AuthorizationService authorizationService;
 
-    public ProductCatalogService(ProductRepository productRepository, ProductIdentifierRepository productIdentifierRepository) {
+    public ProductCatalogService(ProductRepository productRepository, ProductIdentifierRepository productIdentifierRepository,UserAccountRepository userAccountRepository,
+                                 AuthorizationService authorizationService
+    ) {
         this.productRepository = productRepository;
         this.productIdentifierRepository = productIdentifierRepository;
-
+        this.userAccountRepository=userAccountRepository;
+        this.authorizationService=authorizationService;
     }
 
     @Transactional
-    public ProductDetailResponse newProduct(CreateProductRequest request) {
+    public ProductDetailResponse newProduct(CreateProductRequest request , ImsUserPrincipal principal) {
+        if(principal == null ||principal.userIdentifier() == null || principal.userIdentifier().isBlank()){
+            throw new DomainException(
+                    "AUTH_UNAUTHORIZED",
+                    "Authentication required",
+                    401
+            );
+        }
+        UserAccount user = userAccountRepository.findByUserIdentifier(principal.userIdentifier())
+                .orElseThrow(()-> new DomainException(
+                        "AUTH_TOKEN_INVALID",
+                        "User not found for userIdentifier: " + principal.userIdentifier(),
+                        401,
+                        null,
+                        "VR-001"
+                ));
+        EvaluateAuthorizationRequest req = new EvaluateAuthorizationRequest(
+                null,
+                "PERM-001",
+                null,
+                null,null
+        );
+       if(!authorizationService.evaluate(req, user.getUserIdentifier()).isAuthorized()){
+           throw new DomainException(
+                   "AUTH_FORBIDDEN",
+                   "User does not have permission to create product",
+                   403,
+                   null,
+                   "VR-001"
+           );
+       }
+
         String sku = request.sku().trim();
         if(productRepository.existsBySku(sku)){
             throw new DomainException(
@@ -78,6 +119,7 @@ public class ProductCatalogService {
                     "VR-009"
             );
         }
+
         Product product = Product.create(
                 sku,
                 request.name().trim(),
@@ -87,7 +129,8 @@ public class ProductCatalogService {
                 traceable,
                 rotation,
                 shelfLife,
-                request.mrslThresholdDays()
+                request.mrslThresholdDays(),
+                user.getId()
         );
         product = productRepository.save(product);
         if(barcode != null){

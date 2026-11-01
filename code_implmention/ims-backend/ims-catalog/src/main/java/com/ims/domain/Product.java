@@ -104,7 +104,8 @@ public class Product {
             boolean isTraceable,
             String rotationPolicy,
             boolean isShelfLife,
-            Integer mrslDays
+            Integer mrslDays,
+            Long createdBy
     ){
         Product p = new Product();
         p.sku= sku;
@@ -120,6 +121,8 @@ public class Product {
         p.isActive = true;
         p.createdAt = Instant.now();
         p.updatedAt = Instant.now();
+        p.createdBy=createdBy;
+        p.updatedBy=createdBy;
         return p ;
     }
     public void setId(Long id){

@@ -20,7 +20,8 @@ public class PermissionCatalog {
                     "PERM-ADMIN-ROLES",
                     "PERM-STOCK-VIEW",
                     "PERM-STOCK-ADJUST",
-                    "PERM-AUDIT-READ"
+                    "PERM-AUDIT-READ",
+                    "PERM-001"
             ),
             "WAREHOUSE_MANAGER", List.of(
                     "PERM-STOCK-VIEW",
